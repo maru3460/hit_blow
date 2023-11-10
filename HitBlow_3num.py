@@ -6,6 +6,12 @@ init_num = 3#見つかっていない数字の数
 init_nums = [i for i in range(10)]#質問していない数字
 run = True
 
+def cul_poses(poses):
+    rtn = 0
+    for i in range(len(poses)):
+        rtn += len(poses[i][0]) * len(poses[i][1]) * len(poses[i][2])
+    return rtn
+
 def gene_num(poses):#数字の生成
     global init_num
     global init_nums
@@ -65,55 +71,38 @@ def one_remove(poses, n):#残り一個消去
     pos = [[copy.deepcopy(tmp), copy.deepcopy(tmp), copy.deepcopy(tmp)]]
     itgr_pos(poses, pos)
 
-def io(test_num):#inout
+def io(test_num, poses):#inout
     print(f'{test_num[0]}{test_num[1]}{test_num[2]}を入力してください')
+    print(f'poses: {cul_poses(poses)}')
     hit = int(input('hit:'))
+    if hit == 'end':
+        exit()
     blow = int(input('blow:'))
     return [hit, blow]
 
 def gene_pos(hit, blow, x, y, z):#pos生成
     global init_num
     nums = [i for i in range(10)]
+    tmp = copy.deepcopy(nums)
+    tmp.remove(x)
+    tmp.remove(y)
+    tmp.remove(z)
     if hit == 0 and blow == 0:
-        tmp = copy.deepcopy(nums)
-        tmp.remove(x)
-        tmp.remove(y)
-        tmp.remove(z)
         return [[copy.deepcopy(tmp), copy.deepcopy(tmp), copy.deepcopy(tmp)]]
     elif hit == 1 and blow == 0:
         init_num -= 1
-        tmp = copy.deepcopy(nums)
-        tmp.remove(x)
-        tmp.remove(y)
-        tmp.remove(z)
         return [[[x], copy.deepcopy(tmp), copy.deepcopy(tmp)], [copy.deepcopy(tmp), [y], copy.deepcopy(tmp)], [copy.deepcopy(tmp), copy.deepcopy(tmp), [z]]]
     elif hit == 0 and blow == 1:
         init_num -= 1
-        tmp = copy.deepcopy(nums)
-        tmp.remove(x)
-        tmp.remove(y)
-        tmp.remove(z)
         return [[[y, z], copy.deepcopy(tmp), copy.deepcopy(tmp)], [copy.deepcopy(tmp), [x, z], copy.deepcopy(tmp)], [copy.deepcopy(tmp), copy.deepcopy(tmp), [x, y]]]
     elif hit == 2 and blow == 0:
         init_num -= 2
-        tmp = copy.deepcopy(nums)
-        tmp.remove(x)
-        tmp.remove(y)
-        tmp.remove(z)
         return [[[x], [y], copy.deepcopy(tmp)], [copy.deepcopy(tmp), [y], [z]], [[x], copy.deepcopy(tmp), [z]]]
     elif hit == 1 and blow == 1:
         init_num -= 2
-        tmp = copy.deepcopy(nums)
-        tmp.remove(x)
-        tmp.remove(y)
-        tmp.remove(z)
         return [[[x], [z], copy.deepcopy(tmp)], [[x], copy.deepcopy(tmp), [y]], [[z], [y], copy.deepcopy(tmp)], [copy.deepcopy(tmp), [y], [x]], [[y], copy.deepcopy(tmp), [z]], [copy.deepcopy(tmp), [x], [z]]]
     elif hit == 0 and blow == 2:
         init_num -= 2
-        tmp = copy.deepcopy(nums)
-        tmp.remove(x)
-        tmp.remove(y)
-        tmp.remove(z)
         tmp_rtn = []
         tmp_rtn.append([[y], [x], copy.deepcopy(tmp)])
         tmp_rtn.append([[y], copy.deepcopy(tmp), [x]])
@@ -174,7 +163,7 @@ def pos_pos(pos1, pos2):#posとposからposを生成
 
 while(run):
     test_num = gene_num(poses)
-    HitBlow = io(test_num)
+    HitBlow = io(test_num, poses)
     pos = gene_pos(HitBlow[0], HitBlow[1], test_num[0], test_num[1], test_num[2])
     if pos == True:
         print('正解！')
